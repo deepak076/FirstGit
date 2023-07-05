@@ -21,6 +21,14 @@ thirdi.classList.add('invisible');
 
 //queryselectorAll
 
-var second= document.querySelectorAll('.list-group-item:nth-child(2)');
-if(second.length > 1 )
-second[1].style.color = 'green';
+var items = document.querySelectorAll('#items li');
+    if (items.length > 1) {
+      items[1].style.color = 'green';
+    }
+
+var odd= document.querySelectorAll('li:nth-child(odd)');
+for(var i=0; i<odd.length; i++){
+    odd[i].style.backgroundColor = 'green';
+}
+
+  
