@@ -33,7 +33,7 @@ function renderUser() {
         userlist.appendChild(li);
 
         deleteButton.addEventListener('click', () => onDelete(user._id, index)); // Passing user._id and index
-        editButton.addEventListener('click', () => onEdit(index));
+        editButton.addEventListener('click', () => onEdit(user, index)); // Passing user and index
       });
     })
     .catch((error) => {
@@ -105,14 +105,55 @@ function onDelete(userId, index) { // userId is the first parameter
     });
 }
 
-function onEdit(index){
-    const user = storedUsers[index];
-    nameInput.value = user.name;
-    emailInput.value = user.email;
-    phoneInput.value = user.phone;
+// ...
 
-    onDelete(index);
+function onEdit(user, index) {
+  // Populate the form fields with the user's data
+  nameInput.value = user.name;
+  emailInput.value = user.email;
+  phoneInput.value = user.phone;
+
+  // Modify the submit event listener to handle edits
+  myForm.removeEventListener('submit', onSubmit);
+  myForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    // Update the user's data
+    user.name = nameInput.value;
+    user.email = emailInput.value;
+    user.phone = phoneInput.value;
+
+    // Send a PUT request to update the user's data on the server
+    axios.put(`https://crudcrud.com/api/3b3b785b01a945939b78dd5bcb2233a2/appointmentData/${user._id}`, user, {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      }
+    })
+    .then((response) => {
+      console.log(response);
+
+      // Re-render the user list with the updated details
+      renderUser();
+
+      // Clear form inputs
+      nameInput.value = '';
+      emailInput.value = '';
+      phoneInput.value = '';
+
+      // Revert event listeners to original state
+      myForm.removeEventListener('submit', onSubmit);
+      myForm.addEventListener('submit', onSubmit);
+    })
+    .catch((error) => {
+      console.error(error);
+
+      // Handle error gracefully, display error message to the user
+      // ...
+    });
+  });
 }
+// ...
+
 
 
 
